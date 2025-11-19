@@ -2,7 +2,6 @@
 /out/
 /target/
 *.class
-*.jar
 *.sqlite
 *.db
 .DS_Store
