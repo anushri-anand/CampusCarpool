@@ -14,8 +14,7 @@ Desktop Java Application for managing carpooling among BPDC students, built usin
 6. [Installation & Setup](#installation--setup)
 7. [Usage](#usage)
 8. [Technologies](#technologies)
-9. [Contributing](#contributing)
-10. [License](#license)
+9. [License](#license)
 
 ---
 
@@ -152,4 +151,5 @@ java -cp bin App
 ## License
 
 This project is for academic purposes and may not be used commercially without permission.
+
 
