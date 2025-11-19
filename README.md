@@ -103,7 +103,7 @@ src/
 1. **Clone the repository**
 
 ```bash
-git clone https://github.com/<your-username>/CampusCarpool.git
+git clone https://github.com/anushri-anand/CampusCarpool.git
 cd CampusCarpool
 ```
 
@@ -149,16 +149,7 @@ java -cp bin App
 
 ---
 
-## Contributing
-
-* Fork the repository
-* Create a feature branch (`git checkout -b feature-name`)
-* Commit changes (`git commit -m "Add feature"`)
-* Push to branch (`git push origin feature-name`)
-* Open a Pull Request
-
----
-
 ## License
 
 This project is for academic purposes and may not be used commercially without permission.
+
