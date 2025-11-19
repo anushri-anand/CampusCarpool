@@ -5,3 +5,4 @@
 *.jar
 *.sqlite
 *.db
+.DS_Store
