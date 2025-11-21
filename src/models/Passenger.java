@@ -62,7 +62,7 @@ public class Passenger extends User {
     }
 
     public List<Integer> getBookedRideIds() {
-        return new ArrayList<>(bookedRideIds);
+        return new ArrayList<>(bookedRideIds); // Return copy for encapsulation
     }
 
     public void setBookedRideIds(List<Integer> bookedRideIds) {
@@ -77,51 +77,103 @@ public class Passenger extends User {
         this.rideRequestIds = new ArrayList<>(rideRequestIds);
     }
 
-    // Passenger-specific Business Logic
+    // Passenger-specific Business Logic - Booked Rides
 
+    /**
+     * Adds a ride ID to the passenger's booked rides
+     * @param rideId the ID of the newly booked ride
+     */
     public void addBookedRide(int rideId) {
         if (!bookedRideIds.contains(rideId)) {
             bookedRideIds.add(rideId);
         }
     }
 
+    /**
+     * Removes a ride ID from the passenger's booked rides (when cancelled)
+     * @param rideId the ID of the ride to remove
+     */
     public void removeBookedRide(int rideId) {
         bookedRideIds.remove(Integer.valueOf(rideId));
     }
 
-    /** Adds a new ride request ID */
+    /**
+     * Checks if passenger has already booked a specific ride
+     * @param rideId the ride ID to check
+     * @return true if already booked, false otherwise
+     */
+    public boolean hasBookedRide(int rideId) {
+        return bookedRideIds.contains(rideId);
+    }
+
+    /**
+     * Gets total number of rides booked by this passenger
+     * @return count of booked rides
+     */
+    public int getTotalRidesBooked() {
+        return bookedRideIds.size();
+    }
+
+    // Passenger-specific Business Logic - Ride Requests
+
+    /**
+     * Adds a new ride request ID to the passenger's ride requests
+     * @param requestId the ID of the newly posted ride request
+     */
     public void addRideRequest(int requestId) {
         if (!rideRequestIds.contains(requestId)) {
             rideRequestIds.add(requestId);
         }
     }
 
-    /** Removes a ride request ID */
+    /**
+     * Removes a ride request ID from the passenger's ride requests (when cancelled or matched)
+     * @param requestId the ID of the request to remove
+     */
     public void removeRideRequest(int requestId) {
         rideRequestIds.remove(Integer.valueOf(requestId));
     }
 
-    /** Count ride requests posted */
+    /**
+     * Gets total number of ride requests posted by this passenger
+     * @return count of ride requests
+     */
     public int getTotalRideRequests() {
         return rideRequestIds.size();
     }
 
+    // General Business Logic
+
+    /**
+     * Checks if passenger can book a ride
+     * @return true if passenger is not blacklisted, false otherwise
+     */
     public boolean canBookRide() {
-        return canPerformAction();
+        return canPerformAction(); // Inherited from User
     }
 
-    public boolean hasBookedRide(int rideId) {
-        return bookedRideIds.contains(rideId);
+    /**
+     * Checks if passenger can post a ride request
+     * @return true if passenger is not blacklisted, false otherwise
+     */
+    public boolean canPostRideRequest() {
+        return canPerformAction(); // Inherited from User
     }
 
-    public int getTotalRidesBooked() {
-        return bookedRideIds.size();
-    }
-
+    /**
+     * Checks if passenger has a preferred destination set
+     * @return true if preferred destination exists, false otherwise
+     */
     public boolean hasPreferredDestination() {
         return preferredDestination != null && !preferredDestination.isEmpty();
     }
 
+    // Method Overriding - Polymorphism
+
+    /**
+     * Override getRoleDescription from User class
+     * @return passenger-specific role description
+     */
     @Override
     public String getRoleDescription() {
         if (hasPreferredDestination()) {
@@ -130,6 +182,9 @@ public class Passenger extends User {
         return "Passenger";
     }
 
+    /**
+     * Override toString for Passenger-specific information
+     */
     @Override
     public String toString() {
         return "Passenger{" +

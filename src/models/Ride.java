@@ -283,6 +283,31 @@ public class Ride {
     }
 
     /**
+     * ✨ NEW METHOD ✨
+     * Checks if this ride can fulfill a ride request
+     * Used by drivers to see if they can accept a passenger's ride request
+     * @param request the ride request to check
+     * @return true if ride matches request and has enough seats, false otherwise
+     */
+    public boolean canFulfillRequest(RideRequest request) {
+        // Check if ride is active and has enough seats
+        if (!isActive() || seatsAvailable < request.getSeatsRequested()) {
+            return false;
+        }
+
+        // Check if route matches (case-insensitive)
+        boolean routeMatches = this.origin.equalsIgnoreCase(request.getOrigin()) &&
+                              this.destination.equalsIgnoreCase(request.getDestination());
+
+        // Check if date matches
+        boolean dateMatches = this.departureDate.equals(request.getPreferredDate());
+
+        return routeMatches && dateMatches;
+    }
+
+    // Utility Methods
+
+    /**
      * Gets formatted departure date and time
      * @return formatted string like "Dec 25, 2024 at 9:30 AM"
      */

@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS passengers (
 -- Stores available ride destinations/locations
 CREATE TABLE IF NOT EXISTS destinations (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT UNIQUE NOT NULL,
+    name TEXT UNIQUE NOT NULL,\
     description TEXT,
     latitude REAL,
     longitude REAL,
@@ -151,14 +151,38 @@ CREATE INDEX IF NOT EXISTS idx_reports_reported_user ON reports(reported_user);
 -- ========================================
 -- Insert some sample destinations
 INSERT OR IGNORE INTO destinations (name, description) VALUES
-    ('BPDC Campus', 'Main campus location'),
-    ('MG Road', 'Shopping and dining district'),
-    ('Indiranagar', 'Residential and commercial area'),
-    ('Koramangala', 'Tech hub and cafes'),
-    ('Electronic City', 'IT park area'),
-    ('Whitefield', 'IT corridor'),
-    ('Airport', 'Kempegowda International Airport'),
-    ('Railway Station', 'Bangalore City Railway Station');
+    ('BPDC Campus', 'Birla Institute, Academic City'),
+    ('Dubai International Academic City', 'Universities hub'),
+    ('Amity University', 'Academic City'),
+    ('Heriot-Watt University', 'Academic City'),
+    ('Dubai Silicon Oasis', 'Student residences, startups'),
+    ('Dubai Knowledge Park', 'Education & training center'),
+    ('Dubai Internet City', 'Tech & internship zone'),
+    ('JLT', 'Jumeirah Lake Towers, social zone, metro access'),
+    ('JBR', 'Beach, food, events'),
+    ('Academic City', 'Universities area'),
+    ('Mall of the Emirates', 'Shopping, food'),
+    ('Dubai Mall', 'Shopping, meetings, food'),
+    ('Al Barsha', 'Student flats, mall proximity'),
+    ('Dubai Marina', 'Meet-up zone'),
+    ('Greens & Tecom', 'Apartments, coffee, metro, Internet City access'),
+    ('Deira City Centre', 'Shopping, food'),
+    ('Global Village', 'Seasonal student hangout'),
+    ('Karama', 'Food spots, hostels'),
+    ('Ibn Battuta Mall', 'Food, shopping, bus station'),
+    ('Mirdif', 'Student apartments, mall'),
+    ('Al Quoz', 'Art spaces, events'),
+    ('BoxPark', 'Student food & events'),
+    ('City Walk', 'Cafes, social'),
+    ('Bur Dubai', 'Old city, shopping, food'),
+    ('Al Nahda', 'Student apartments, residential'),
+    ('Muhaisnah', 'Residential, some student zones'),
+    ('Al Rigga', 'Hostels, food, metro'),
+    ('Al Rashidiya', 'Metro, hostels'),
+    ('Business Bay', 'Internships, work, metro access'),
+    ('Dubai Festival City', 'Mall, events'),
+    ('Al Safa Park', 'Park, recreation, events');
+
 
 -- Sample admin user for testing (password: admin123)
 INSERT OR IGNORE INTO users (name, roll_number, email, password, role) VALUES
