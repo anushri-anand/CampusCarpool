@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * Driver class extending User.
- * Represents a student who offers rides and can view ride requests.
+ * Represents a student who offers rides.
  * Demonstrates: Inheritance, Polymorphism, Encapsulation
  */
 public class Driver extends User {
@@ -120,10 +120,10 @@ public class Driver extends User {
 
     /**
      * Checks if driver can post a new ride
-     * @return true if driver is not blacklisted and has valid vehicle info, false otherwise
+     * @return true if driver is not blacklisted, false otherwise
      */
     public boolean canPostRide() {
-        return canPerformAction() && hasValidVehicleInfo();
+        return canPerformAction(); // Inherited from User
     }
 
     /**
@@ -143,31 +143,6 @@ public class Driver extends User {
      */
     public int getTotalRidesPosted() {
         return postedRideIds.size();
-    }
-
-    /**
-     * Checks if driver can view and respond to ride requests
-     * @return true if driver is not blacklisted, false otherwise
-     */
-    public boolean canViewRideRequests() {
-        return !isBlacklisted();
-    }
-
-    /**
-     * Checks if driver can accept a ride request
-     * Must not be blacklisted and must have valid vehicle info
-     * @return true if driver can accept requests, false otherwise
-     */
-    public boolean canAcceptRequest() {
-        return !isBlacklisted() && hasValidVehicleInfo();
-    }
-
-    /**
-     * Placeholder for driver preferences (future expansion)
-     * @return true if driver wants to view requests, false otherwise
-     */
-    public boolean wantsToServeRequests() {
-        return true; // Always yes for now, can be made configurable later
     }
 
     // Method Overriding - Polymorphism
