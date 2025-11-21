@@ -108,4 +108,65 @@ public class RideService {
                                 + ride.getDropoffLocation() + " has been cancelled.");
     }
 
+    // In RideService.java, add these methods:
+
+    // 1. Search methods
+    public List<Ride> searchRidesByDestination(String destination) {
+       return rideDAO.getRidesByDestination(destination);
+        }
+
+    public List<Ride> searchRidesByRoute(String origin, String destination) {
+      return rideDAO.getRidesByRoute(origin, destination);
+    }
+
+    public List<Ride> searchRidesByDate(LocalDate date) {
+       return rideDAO.getRidesByDate(date);
+    }
+
+    // 2. Post ride (driver)
+    public Ride postRide(Driver driver, String origin, String destination,
+                         LocalDate departureDate, LocalTime departureTime,
+                        int seatsAvailable, double pricePerSeat) {
+        return postRide(driver, origin, destination, departureDate, departureTime, seatsAvailable, pricePerSeat);
+    }
+
+    // 3. Complete ride
+    public boolean completeRide(int rideId, int driverId) {
+        Ride ride = rideDAO.getRideById(rideId);
+        if (ride != null && ride.getDriverId() == driverId) {
+            ride.markAsCompleted();
+            return rideDAO.updateRide(ride);
+        }
+        return false;
+    }
+
+    // 4. Ride requests (passenger)
+    public RideRequest postRideRequest(Passenger passenger, String origin, String destination,
+                                    LocalDate preferredDate, LocalTime preferredTime,
+                                    int seatsRequested, String notes) {
+        return null; // implement using RideRequestDAO
+    }
+
+    public boolean cancelRideRequest(int requestId, int passengerId) {
+        return false; // implement using RideRequestDAO
+    }
+
+    public List<RideRequest> getAllPendingRequests() {
+        return new ArrayList<>(); // implement using RideRequestDAO
+    }
+
+    public List<RideRequest> getRequestsByPassenger(int passengerId) {
+        return new ArrayList<>(); // implement using RideRequestDAO
+    }
+
+    // 5. Matching
+    public List<Ride> findMatchingRidesForRequest(RideRequest request) {
+        return new ArrayList<>(); // implement matching logic
+    }
+
+    public List<RideRequest> findMatchingRequestsForRide(Ride ride) {
+        return new ArrayList<>(); // implement matching logic
+    }
+
+
 }
