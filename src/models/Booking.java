@@ -60,6 +60,7 @@ public class Booking {
         this.seatsBooked = seatsBooked;
         this.status = status;
         this.timestamp = timestamp;
+        
     }
 
     // Getters and Setters
