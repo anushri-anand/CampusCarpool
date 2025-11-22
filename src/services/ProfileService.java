@@ -3,7 +3,12 @@ package services;
 import models.User;
 import models.Driver;
 import models.Passenger;
+import models.Rating;
+import models.Ride;
 import dao.UserDAO;
+
+import java.util.List;
+
 import dao.DriverDAO;
 import dao.PassengerDAO;
 
@@ -150,4 +155,18 @@ public class ProfileService {
                 user.getRating(), user.getTotalRatings()
         );
     }
+    // Missing from original
+
+public List<Rating> getUserRatings(int userId) {
+    return java.util.Collections.emptyList();  // Replace with DAO implementation
+}
+
+public List<Ride> getRideHistory(User user) {
+    return java.util.Collections.emptyList();  // Replace with actual logic
+}
+
+public boolean updateProfile(User updatedUser) {
+    return userDAO.updateUser(updatedUser);
+}
+
 }
