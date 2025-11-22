@@ -225,5 +225,13 @@ public class BookingService {
         Integer bookingId = bookingDAO.getBookingId(passengerId, rideId);
         return bookingId != null ? bookingId : -1;
     }
+    /**
+     * Get all rides booked by a passenger
+     */
+    public List<Ride> getPassengerBookings(int passengerId) {
+        RideDAO rideDAO = new RideDAO();
+        return rideDAO.getRidesBookedByPassenger(passengerId);
+    }
+
 }
 

@@ -1,107 +1,101 @@
 package views;
 
+import controllers.BookingController;
 import models.Ride;
-import services.BookingService;
-import utils.NotificationCenter;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 
 public class BookingView extends JFrame {
 
-    private BookingService bookingService;
-    private JTable rideTable;
-    private DefaultTableModel tableModel;
-    private int loggedInPassengerId;
+    private BookingController controller;
 
-    public BookingView(int passengerId) {
-        this.loggedInPassengerId = passengerId;
-        this.bookingService = new BookingService();
+    private JTextArea textArea;
+    private JButton btnSearch, btnMyBookings, btnBack;
 
-        setTitle("Book a Ride - Campus Carpool");
-        setSize(900, 450);
-        setLocationRelativeTo(null);
+    public BookingView(BookingController controller) {
+        this.controller = controller;
+        controller.setView(this);
+
+        initUI();
+        controller.loadAvailableRides();   // Load rides on open
+    }
+
+    private void initUI() {
+        setTitle("Ride Booking");
+        setSize(600, 500);
+        setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        initComponents();
-        loadAvailableRides();
-    }
+        textArea = new JTextArea();
+        textArea.setEditable(false);
+        add(new JScrollPane(textArea), BorderLayout.CENTER);
 
-    private void initComponents() {
-        setLayout(new BorderLayout());
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 3));
+        btnSearch = new JButton("Search Rides");
+        btnMyBookings = new JButton("My Bookings");
+        btnBack = new JButton("Back");
 
-        // Table setup
-        tableModel = new DefaultTableModel(
-                new String[]{"ID", "Driver", "From", "To", "Date", "Time", "Seats", "Price (AED)", "Vehicle"},
-                0
-        );
-        rideTable = new JTable(tableModel);
-        JScrollPane scrollPane = new JScrollPane(rideTable);
+        buttonPanel.add(btnSearch);
+        buttonPanel.add(btnMyBookings);
+        buttonPanel.add(btnBack);
 
-        // Book button
-        JButton bookBtn = new JButton("Book Selected Ride");
-        bookBtn.addActionListener(e -> handleBooking());
+        add(buttonPanel, BorderLayout.SOUTH);
 
-        // Refresh button
-        JButton refreshBtn = new JButton("Refresh");
-        refreshBtn.addActionListener(e -> loadAvailableRides());
+        // Listeners
+        btnSearch.addActionListener(e -> controller.loadAvailableRides());
+        btnMyBookings.addActionListener(e -> controller.loadMyBookings());
+        btnBack.addActionListener(e -> dispose());
 
-        JPanel btnPanel = new JPanel();
-        btnPanel.add(bookBtn);
-        btnPanel.add(refreshBtn);
-
-        add(scrollPane, BorderLayout.CENTER);
-        add(btnPanel, BorderLayout.SOUTH);
-    }
-
-    private void loadAvailableRides() {
-        tableModel.setRowCount(0); // Clear previous rows
-
-        try {
-            List<Ride> rides = bookingService.getAvailableRides();
-            for (Ride r : rides) {
-                tableModel.addRow(new Object[]{
-                        r.getId(), r.getDriverName(), r.getOrigin(), r.getDestination(),
-                        r.getDepartureDate(), r.getDepartureTime(),
-                        r.getSeatsAvailable(), r.getPricePerSeat(), r.getVehicleInfo()
-                });
-            }
-        } catch (Exception ex) {
-            NotificationCenter.showError("Failed to load rides.");
-            ex.printStackTrace();
-        }
-    }
-
-    private void handleBooking() {
-        int selectedRow = rideTable.getSelectedRow();
-        if (selectedRow == -1) {
-            NotificationCenter.showWarning("Please select a ride to book.");
-            return;
-        }
-
-        int rideId = (int) tableModel.getValueAt(selectedRow, 0);
-
-        String seatsInput = JOptionPane.showInputDialog(this, "Enter number of seats to book:", "1");
-        if (seatsInput == null) return; // cancel
-        int seats;
-
-        try {
-            seats = Integer.parseInt(seatsInput);
-        } catch (Exception e) {
-            NotificationCenter.showError("Enter valid seat count.");
-            return;
-        }
-
-        boolean success = bookingService.bookRide(loggedInPassengerId, rideId, seats);
-
-        if (success) {
-            loadAvailableRides(); // refresh seat count
-        }
-    }
-
-    public void display() {
         setVisible(true);
+    }
+
+    // ===============================
+    // CONTROLLER -> VIEW METHODS
+    // ===============================
+
+    public void showRides(List<Ride> rides) {
+        textArea.setText("");
+        if (rides == null || rides.isEmpty()) {
+            textArea.setText("No rides available.\n");
+            return;
+        }
+
+        for (Ride r : rides) {
+            textArea.append(
+                    "Ride #" + r.getId() + "\n"
+                    + "Driver: " + r.getDriverName() + "\n"
+                    + "Route: " + r.getRouteDescription() + "\n"
+                    + "Departure: " + r.getFormattedDepartureDateTime() + "\n"
+                    + "Seats: " + r.getSeatsAvailable() + "/" + r.getSeatsTotal() + "\n"
+                    + "Price: AED " + r.getPricePerSeat() + "\n"
+                    + "----------------------------------------\n"
+            );
+        }
+    }
+
+    public void showMyBookings(List<Ride> bookings) {
+        textArea.setText("");
+        if (bookings == null || bookings.isEmpty()) {
+            textArea.setText("You have no active bookings.\n");
+            return;
+        }
+
+        for (Ride r : bookings) {
+            textArea.append(
+                    "BOOKED RIDE #" + r.getId() + "\n"
+                    + r.getRouteDescription() + " — " + r.getFormattedDepartureDateTime() + "\n"
+                    + "----------------------------------------\n"
+            );
+        }
+    }
+
+    public void showMessage(String msg) {
+        JOptionPane.showMessageDialog(this, msg);
+    }
+
+    public void showError(String err) {
+        JOptionPane.showMessageDialog(this, err, "Error", JOptionPane.ERROR_MESSAGE);
     }
 }
