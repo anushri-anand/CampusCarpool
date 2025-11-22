@@ -1,7 +1,12 @@
+package controllers;
 import java.util.List;
 import services.ProfileService;
 import views.ProfileView;
-import models.*;
+
+import models.User;
+import models.Rating;
+import models.Ride;
+
 
 public class ProfileController {
 

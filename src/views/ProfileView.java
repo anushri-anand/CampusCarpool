@@ -1,6 +1,17 @@
+package views;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+
+import controllers.ProfileController;
+import models.User;
+import models.Rating;
+import models.Ride;
+
+import views.ChangePasswordView;
+import views.EditProfileView;
+
 
 public class ProfileView extends JFrame {
 
