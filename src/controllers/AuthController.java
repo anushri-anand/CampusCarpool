@@ -7,42 +7,28 @@ import views.RegisterView;
 public class AuthController {
 
     private RegisterView registerView;
-    private LoginView loginView;
     private AuthService authService;
 
-    // Constructor for RegisterView
     public AuthController(RegisterView registerView) {
         this.registerView = registerView;
         this.authService = new AuthService();
     }
 
-    // Constructor for LoginView
-    public AuthController(LoginView loginView) {
-        this.loginView = loginView;
-        this.authService = new AuthService();
+    // =============================
+    // REGISTER PASSENGER
+    // =============================
+    public boolean handleRegisterAsPassenger(String name, String roll, String email, String password, String dest) {
+        var user = authService.registerPassenger(name, roll, email, password, dest);
+        return user != null;
     }
 
     // =============================
-    // HANDLE REGISTER
+    // REGISTER DRIVER
     // =============================
-    public void handleRegister() {
-
-        String name = registerView.getNameField();
-        String roll = registerView.getRollField();
-        String email = registerView.getEmailField();
-        String password = registerView.getPasswordField();
-
-        // Call AuthService → create passenger by default
-        var user = authService.registerPassenger(name, roll, email, password, null);
-
-        if (user == null) {
-            registerView.showError("Registration failed. Check your inputs.");
-            return;
-        }
-
-        registerView.showSuccess("Registration successful!");
-        registerView.dispose();
-        new LoginView().setVisible(true);
+    public boolean handleRegisterAsDriver(String name, String roll, String email, String password,
+                                          String license, String model, String vehicleNum, int seats) {
+        var user = authService.registerDriver(name, roll, email, password, license, model, vehicleNum, seats);
+        return user != null;
     }
 
     // =============================

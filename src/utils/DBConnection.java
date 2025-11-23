@@ -1,3 +1,4 @@
+// DBConnection.java
 package utils;
 
 import java.sql.Connection;
@@ -125,12 +126,19 @@ public class DBConnection {
             // Enable foreign keys first
             stmt.execute("PRAGMA foreign_keys = ON;");
             
+            // NOTE:
+            // We use relaxed CHECK expressions (LIKE) for roll_number and email here
+            // to avoid SQLite rejecting inputs that Java-side validation accepts.
+            // Stronger validation is performed in AuthService (Java).
+            
             // Create users table
             stmt.execute("CREATE TABLE IF NOT EXISTS users (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "name TEXT NOT NULL, " +
-                "roll_number TEXT UNIQUE NOT NULL CHECK(roll_number GLOB '[1-2][0-9][0-9][0-9]A7[PT]S[0-9][0-9][0-9][0-9]U'), " +
-                "email TEXT UNIQUE NOT NULL CHECK(email GLOB 'f[1-2][0-9][0-9][0-9]03[0-9][0-9][0-9]@dubai.bits-pilani.ac.in'), " +
+                // Looser roll_number check so DB won't reject valid inputs; JS/Java enforces stricter format
+                "roll_number TEXT UNIQUE NOT NULL CHECK(roll_number LIKE '20%A7%S%U'), " +
+                // Looser email check: starts with 'f' and domain exact
+                "email TEXT UNIQUE NOT NULL CHECK(email LIKE 'f%@dubai.bits-pilani.ac.in'), " +
                 "password TEXT NOT NULL, " +
                 "role TEXT NOT NULL CHECK(role IN ('DRIVER', 'PASSENGER', 'BOTH')), " +
                 "warnings INTEGER DEFAULT 0, " +
@@ -286,4 +294,3 @@ public class DBConnection {
         closeConnection();
     }
 }
-
