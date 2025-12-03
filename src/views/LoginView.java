@@ -137,6 +137,7 @@ public class LoginView extends JFrame {
         loginButton.setPreferredSize(new Dimension(300, 40));
         loginButton.setBackground(new Color(33, 128, 141));
         loginButton.setForeground(Color.WHITE);
+        loginButton.setOpaque(true);
         loginButton.setFocusPainted(false);
         loginButton.setBorderPainted(false);
         loginButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -208,6 +209,11 @@ public class LoginView extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
+            try {
+                UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             new LoginView().setVisible(true);
         });
     }

@@ -198,10 +198,6 @@ public class RegisterView extends JFrame {
         });
     }
 
-
-    // ============================================================
-    // ⭐ THIS IS WHAT YOU ASKED: WHERE toggleFieldsForRole() IS
-    // ============================================================
     private void toggleFieldsForRole(String role) {
 
 
@@ -259,6 +255,8 @@ public class RegisterView extends JFrame {
         b.setForeground(Color.WHITE);
         b.setBorderPainted(false);
         b.setFocusPainted(false);
+        b.setOpaque(true);
+        b.setContentAreaFilled(true);
     }
 
 
