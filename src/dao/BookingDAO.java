@@ -3,6 +3,8 @@ package dao;
 import utils.DBConnection;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * BookingDAO handles database operations for bookings
@@ -80,6 +82,22 @@ public class BookingDAO {
         }
         return null;
     }
+    public List<Integer> getRideIdsByPassenger(int passengerId) {
+    List<Integer> rideIds = new ArrayList<>();
+    String sql = "SELECT ride_id FROM bookings WHERE passenger_id = ? AND status IN ('CONFIRMED', 'REQUESTED')";
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        pstmt.setInt(1, passengerId);
+        ResultSet rs = pstmt.executeQuery();
+        while (rs.next()) {
+            rideIds.add(rs.getInt("ride_id"));
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return rideIds;
+}
+
 
     // 6. Get passenger ID by booking ID
     public Integer getPassengerIdByBookingId(int bookingId) {

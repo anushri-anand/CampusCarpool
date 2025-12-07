@@ -4,6 +4,7 @@ import models.Ride;
 import models.RideRequest;
 import models.Driver;
 import models.Passenger;
+import dao.BookingDAO;
 import dao.RideDAO;
 import dao.RideRequestDAO;
 import dao.UserDAO;
@@ -91,8 +92,20 @@ public class RideService {
         return rideDAO.getRidesByDriver(driverId);
     }
 
-    public List<Ride> getRidesBookedByPassenger(int passengerId) {
-    return rideDAO.getRidesBookedByPassenger(passengerId);
+public List<Ride> getRidesBookedByPassenger(int passengerId) {
+    List<Ride> rides = new ArrayList<>();
+    BookingDAO bookingDAO = new BookingDAO();
+    RideDAO rideDAO = new RideDAO();
+
+    List<Integer> rideIds = bookingDAO.getRideIdsByPassenger(passengerId);
+    for (Integer rideId : rideIds) {
+        Ride ride = rideDAO.getRideById(rideId);
+        if (ride != null && "ACTIVE".equals(ride.getStatus())) {
+            rides.add(ride);
+        }
+    }
+
+    return rides;
 }
 
 
