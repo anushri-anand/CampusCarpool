@@ -11,7 +11,7 @@ public class BookingDAO {
 
     // 1. Create a new booking
     public boolean createBooking(int passengerId, int rideId, int seatsBooked) {
-        String sql = "INSERT INTO bookings (ride_id, passenger_id, seats_booked, status) VALUES (?, ?, ?, 'REQUESTED')";
+        String sql = "INSERT INTO bookings (ride_id, passenger_id, seats_booked, status) VALUES (?, ?, ?, 'CONFIRMED')";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, rideId);

@@ -207,18 +207,19 @@ public class DBConnection {
                 "FOREIGN KEY (passenger_id) REFERENCES passengers(user_id) ON DELETE CASCADE)");
             
             // Create bookings table
-            stmt.execute("CREATE TABLE IF NOT EXISTS bookings (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "ride_id INTEGER, " +
-                "passenger_id INTEGER NOT NULL, " +
-                "origin TEXT, " +
-                "destination TEXT, " +
-                "status TEXT DEFAULT 'REQUESTED' CHECK(status IN ('REQUESTED', 'CONFIRMED', 'CANCELLED')), " +
-                "seats_booked INTEGER DEFAULT 1, " +
-                "timestamp TEXT DEFAULT CURRENT_TIMESTAMP, " +
-                "FOREIGN KEY (ride_id) REFERENCES rides(id) ON DELETE CASCADE, " +
-                "FOREIGN KEY (passenger_id) REFERENCES passengers(user_id) ON DELETE CASCADE, " +
-                "UNIQUE(ride_id, passenger_id))");
+            // Create bookings table
+stmt.execute("CREATE TABLE IF NOT EXISTS bookings (" +
+    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+    "ride_id INTEGER NOT NULL, " +                     // must be non-null
+    "passenger_id INTEGER NOT NULL, " +
+    "status TEXT DEFAULT 'CONFIRMED' " +              // default now CONFIRMED
+        "CHECK(status IN ('REQUESTED', 'CONFIRMED', 'CANCELLED')), " +
+    "seats_booked INTEGER DEFAULT 1 CHECK(seats_booked > 0), " +
+    "timestamp TEXT DEFAULT CURRENT_TIMESTAMP, " +
+    "FOREIGN KEY (ride_id) REFERENCES rides(id) ON DELETE CASCADE, " +
+    "FOREIGN KEY (passenger_id) REFERENCES passengers(user_id) ON DELETE CASCADE, " +
+    "UNIQUE(ride_id, passenger_id))");
+
             
             // Create ratings table
             stmt.execute("CREATE TABLE IF NOT EXISTS ratings (" +

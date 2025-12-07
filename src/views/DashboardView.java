@@ -546,38 +546,46 @@ public class DashboardView extends JFrame {
     /**
      * Show book ride dialog
      */
-    private void showBookRideDialog(int rideId) {
-        Ride ride = controller.getRideById(rideId);
-        if (ride == null) {
-            JOptionPane.showMessageDialog(this, "Ride not found");
-            return;
-        }
-        
-        String[] options = new String[ride.getSeatsAvailable()];
-        for (int i = 0; i < options.length; i++) {
-            options[i] = String.valueOf(i + 1);
-        }
-        
-        String selected = (String) JOptionPane.showInputDialog(
-            this,
-            "Select number of seats to book:",
-            "Book Ride",
-            JOptionPane.QUESTION_MESSAGE,
-            null,
-            options,
-            options[0]
-        );
-        
-        if (selected != null) {
-            int seats = Integer.parseInt(selected);
-            if (controller.bookRide(rideId, seats)) {
-                JOptionPane.showMessageDialog(this, "Booking successful!");
-            } else {
-                JOptionPane.showMessageDialog(this, "Booking failed", "Error", JOptionPane.ERROR_MESSAGE);
+private void showBookRideDialog(int rideId) {
+    Ride ride = controller.getRideById(rideId);
+    if (ride == null) {
+        JOptionPane.showMessageDialog(this, "Ride not found");
+        return;
+    }
+
+    String[] options = new String[ride.getSeatsAvailable()];
+    for (int i = 0; i < options.length; i++) options[i] = String.valueOf(i + 1);
+
+    String selected = (String) JOptionPane.showInputDialog(
+        this,
+        "Select number of seats to book:",
+        "Book Ride",
+        JOptionPane.QUESTION_MESSAGE,
+        null,
+        options,
+        options[0]
+    );
+
+    if (selected != null) {
+        int seats = Integer.parseInt(selected);
+
+        if (controller.bookRide(rideId, seats)) {
+            JOptionPane.showMessageDialog(this, "Booking successful!");
+
+            // Fix: get JTable inside the "My Bookings" tab
+            int bookingsTabIndex = tabbedPane.indexOfTab("My Bookings");
+            if (bookingsTabIndex != -1) {
+                JPanel bookingsPanel = (JPanel) tabbedPane.getComponentAt(bookingsTabIndex);
+                JScrollPane scrollPane = (JScrollPane) bookingsPanel.getComponent(0); // first component
+                JTable bookingsTable = (JTable) scrollPane.getViewport().getView();
+                refreshMyBookings((DefaultTableModel) bookingsTable.getModel());
             }
+        } else {
+            JOptionPane.showMessageDialog(this, "Booking failed", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+}
+
     /**
      * Show ride details dialog
      */

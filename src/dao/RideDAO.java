@@ -234,30 +234,37 @@ public class RideDAO {
     /**
      * Get rides booked by a specific passenger
      */
-    public List<Ride> getRidesBookedByPassenger(int passengerId) {
-        String sql = "SELECT r.* FROM rides r " +
-                     "JOIN bookings b ON r.id = b.ride_id " +
-                     "WHERE b.passenger_id = ? AND b.status = 'CONFIRMED' " +
-                     "ORDER BY r.departure_date, r.departure_time";
-        List<Ride> rides = new ArrayList<>();
-        
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            
-            pstmt.setInt(1, passengerId);
-            ResultSet rs = pstmt.executeQuery();
-            
-            while (rs.next()) {
-                rides.add(extractRideFromResultSet(rs));
-            }
-            
-        } catch (SQLException e) {
-            System.err.println("Error getting rides booked by passenger: " + e.getMessage());
-            e.printStackTrace();
+public List<Ride> getRidesBookedByPassenger(int passengerId) {
+    List<Ride> rides = new ArrayList<>();
+    String sql = "SELECT r.* FROM rides r " +
+             "JOIN bookings b ON r.id = b.ride_id " +
+             "WHERE b.passenger_id = ? AND b.status = 'CONFIRMED'";
+
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, passengerId);
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            Ride ride = new Ride();
+            ride.setId(rs.getInt("id"));
+            ride.setDriverId(rs.getInt("driver_id"));
+            ride.setOrigin(rs.getString("origin"));
+            ride.setDestination(rs.getString("destination"));
+            ride.setDepartureDate(rs.getDate("departure_date").toLocalDate());
+            ride.setDepartureTime(rs.getTime("departure_time").toLocalTime());
+            ride.setSeatsAvailable(rs.getInt("seats_available"));
+            ride.setSeatsTotal(rs.getInt("seats_total"));
+            ride.setPricePerSeat(rs.getDouble("price_per_seat"));
+            ride.setStatus(rs.getString("status"));
+            rides.add(ride);
         }
-        
-        return rides;
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+
+    return rides;
+}
+
 
     /**
      * Helper method to extract Ride object from ResultSet

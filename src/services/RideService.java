@@ -92,8 +92,9 @@ public class RideService {
     }
 
     public List<Ride> getRidesBookedByPassenger(int passengerId) {
-        return rideDAO.getRidesBookedByPassenger(passengerId);
-    }
+    return rideDAO.getRidesBookedByPassenger(passengerId);
+}
+
 
     // ... rest of your RideRequest and helper methods unchanged
 
@@ -125,10 +126,34 @@ public class RideService {
 
     // 2. Post ride (driver)
     public Ride postRide(Driver driver, String origin, String destination,
-                         LocalDate departureDate, LocalTime departureTime,
-                        int seatsAvailable, double pricePerSeat) {
-        return postRide(driver, origin, destination, departureDate, departureTime, seatsAvailable, pricePerSeat);
-    }
+                     LocalDate departureDate, LocalTime departureTime,
+                     int seatsAvailable, double pricePerSeat) {
+
+    // Build vehicle info manually
+    String vehicleInfo = driver.getVehicleModel() + " (" + driver.getVehicleNumber() + ")";
+
+    // Create a new Ride object
+    Ride ride = new Ride(
+            0,  // Auto-generated ID
+            driver.getId(),
+            driver.getName(),
+            origin,
+            destination,
+            departureDate,
+            departureTime,
+            seatsAvailable,     // seats_available
+            seatsAvailable,     // seats_total
+            pricePerSeat,
+            "ACTIVE",
+            vehicleInfo
+    );
+
+    // Save to DB
+    boolean success = rideDAO.createRide(ride);
+
+    return success ? ride : null;
+}
+
 
     // 3. Complete ride
     public boolean completeRide(int rideId, int driverId) {
