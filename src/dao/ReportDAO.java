@@ -8,14 +8,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * ReportDAO handles database operations for Report objects
- */
 public class ReportDAO {
 
-    /**
-     * Create a new report
-     */
     public boolean createReport(int reportedBy, int reportedUser, Integer rideId, String reason) {
         String sql = "INSERT INTO reports (reported_by, reported_user, ride_id, reason, status) " +
                      "VALUES (?, ?, ?, ?, 'PENDING')";
@@ -43,9 +37,6 @@ public class ReportDAO {
         return false;
     }
 
-    /**
-     * Get report by ID
-     */
     public Report getReportById(int reportId) {
         String sql = "SELECT * FROM reports WHERE id = ?";
         
@@ -67,9 +58,6 @@ public class ReportDAO {
         return null;
     }
 
-    /**
-     * Get all pending reports
-     */
     public List<Report> getPendingReports() {
         String sql = "SELECT * FROM reports WHERE status = 'PENDING' ORDER BY timestamp DESC";
         List<Report> reports = new ArrayList<>();
@@ -90,9 +78,6 @@ public class ReportDAO {
         return reports;
     }
 
-    /**
-     * Get reports by reported user
-     */
     public List<Report> getReportsByReportedUser(int userId) {
         String sql = "SELECT * FROM reports WHERE reported_user = ? ORDER BY timestamp DESC";
         List<Report> reports = new ArrayList<>();
@@ -115,9 +100,7 @@ public class ReportDAO {
         return reports;
     }
 
-    /**
-     * Get reports submitted by a user
-     */
+
     public List<Report> getReportsByReporter(int userId) {
         String sql = "SELECT * FROM reports WHERE reported_by = ? ORDER BY timestamp DESC";
         List<Report> reports = new ArrayList<>();
@@ -140,9 +123,6 @@ public class ReportDAO {
         return reports;
     }
 
-    /**
-     * Get report count for a user
-     */
     public int getReportCountForUser(int userId) {
         String sql = "SELECT COUNT(*) FROM reports WHERE reported_user = ? AND status IN ('PENDING', 'RESOLVED')";
         
@@ -164,9 +144,6 @@ public class ReportDAO {
         return 0;
     }
 
-    /**
-     * Update report status
-     */
     public boolean updateReportStatus(int reportId, String status) {
         String sql = "UPDATE reports SET status = ? WHERE id = ?";
         
@@ -186,9 +163,6 @@ public class ReportDAO {
         return false;
     }
 
-    /**
-     * Extract Report from ResultSet
-     */
     private Report extractReportFromResultSet(ResultSet rs) throws SQLException {
         Report report = new Report();
         report.setId(rs.getInt("id"));
@@ -211,9 +185,6 @@ public class ReportDAO {
         return report;
     }
 
-    /**
-     * Delete report
-     */
     public boolean deleteReport(int reportId) {
         String sql = "DELETE FROM reports WHERE id = ?";
         

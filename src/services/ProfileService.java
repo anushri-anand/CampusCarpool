@@ -6,16 +6,11 @@ import models.Passenger;
 import models.Rating;
 import models.Ride;
 import dao.UserDAO;
-
-import java.util.List;
-
 import dao.DriverDAO;
 import dao.PassengerDAO;
 
-/**
- * ProfileService handles all user profile operations.
- * Demonstrates profile management & data update logic.
- */
+import java.util.List;
+
 public class ProfileService {
 
     private UserDAO userDAO;
@@ -28,10 +23,6 @@ public class ProfileService {
         this.passengerDAO = new PassengerDAO();
     }
 
-    // ================================
-    // PROFILE VIEWING
-    // ================================
-    
     public User getUserProfile(int userId) {
         return userDAO.getUserById(userId);
     }
@@ -44,10 +35,6 @@ public class ProfileService {
         return passengerDAO.getPassengerByUserId(userId);
     }
 
-    // ================================
-    // PROFILE EDIT / UPDATE
-    // ================================
-    
     public boolean updateUserInfo(int userId, String name) {
         User user = userDAO.getUserById(userId);
         if (user == null) return false;
@@ -56,7 +43,7 @@ public class ProfileService {
             user.setName(name);
         }
 
-        return userDAO.updateUser(user);  // must exist in DAO
+        return userDAO.updateUser(user);
     }
 
     public boolean updateDriverInfo(int userId, String vehicleModel,
@@ -88,85 +75,70 @@ public class ProfileService {
         return passengerDAO.updatePassenger(passenger);
     }
 
-    // ================================
-    // PASSWORD UPDATE
-    // ================================
-    
     public boolean updatePassword(int userId, String oldPass, String newPass) {
         User user = userDAO.getUserById(userId);
         if (user == null) return false;
 
         if (!user.getPassword().equals(oldPass)) {
-            return false; // old password doesn't match
+            return false;
         }
         
         user.setPassword(newPass);
         return userDAO.updateUser(user);
     }
-
-    // ================================
-    // STATS & RATING DETAILS
-    // ================================
-    
-    public String getUserStatistics(int userId) {
-        User user = userDAO.getUserById(userId);
-        if (user == null) {
-            return "User not found";
-        }
-
-        StringBuilder stats = new StringBuilder();
-        stats.append("=== User Statistics ===\n");
-        stats.append("Name: ").append(user.getName()).append("\n");
-        stats.append("Rating: ").append(String.format("%.2f", user.getRating()))
-             .append(" (").append(user.getTotalRatings()).append(" ratings)\n");
-        stats.append("Warnings: ").append(user.getWarnings()).append("\n");
-        stats.append("Blacklisted: ").append(user.isBlacklisted() ? "Yes" : "No").append("\n");
-
-        if (user.getRole().equalsIgnoreCase("DRIVER") ||
-            user.getRole().equalsIgnoreCase("BOTH")) {
-            
-            Driver d = driverDAO.getDriverByUserId(userId);
-            if (d != null) {
-                stats.append("\n=== Driver Stats ===\n");
-                stats.append("Vehicle Model: ").append(d.getVehicleModel()).append("\n");
-                stats.append("Vehicle Number: ").append(d.getVehicleNumber()).append("\n");
-            }
-        }
-
-        if (user.getRole().equalsIgnoreCase("PASSENGER") ||
-            user.getRole().equalsIgnoreCase("BOTH")) {
-            
-            Passenger p = passengerDAO.getPassengerByUserId(userId);
-            if (p != null) {
-                stats.append("\n=== Passenger Stats ===\n");
-                stats.append("Preferred Destination: ").append(p.getPreferredDestination()).append("\n");
-            }
-        }
-
-        return stats.toString();
+public String getUserStatistics(int userId) {
+    User user = userDAO.getUserById(userId);
+    if (user == null) {
+        return "User not found";
     }
 
-    public String getRatingDetails(int userId) {
-        User user = userDAO.getUserById(userId);
-        if (user == null) return "User not found";
+    StringBuilder stats = new StringBuilder();
+    stats.append("=== User Statistics ===\n");
+    stats.append("ID: ").append(user.getId()).append("\n");
+    stats.append("Name: ").append(user.getName()).append("\n");
+    stats.append("Email: ").append(user.getEmail()).append("\n");
 
-        return String.format(
-                "Average Rating: %.2f/5.0 (%d total ratings)",
-                user.getRating(), user.getTotalRatings()
-        );
+    BookingService bookingService = new BookingService();
+
+    if (user.getRole().equalsIgnoreCase("PASSENGER") ||
+        user.getRole().equalsIgnoreCase("BOTH")) {
     }
-    // Missing from original
 
-public List<Rating> getUserRatings(int userId) {
-    return java.util.Collections.emptyList();  // Replace with DAO implementation
+    if (user.getRole().equalsIgnoreCase("DRIVER") ||
+        user.getRole().equalsIgnoreCase("BOTH")) {
+
+        Driver d = driverDAO.getDriverByUserId(userId);
+        if (d != null) {
+            stats.append("\n=== Driver Stats ===\n");
+            stats.append("Vehicle Model: ").append(d.getVehicleModel()).append("\n");
+            stats.append("Vehicle Number: ").append(d.getVehicleNumber()).append("\n");
+            stats.append("Seats Available: ").append(d.getSeatsAvailable()).append("\n");
+
+            int ridesGiven = bookingService.getRideBookingCount(d.getId());
+            stats.append("Total Rides Given: ").append(ridesGiven).append("\n");
+
+        }
+    }
+
+    return stats.toString();
 }
 
-public List<Ride> getRideHistory(User user) {
-    return java.util.Collections.emptyList();  // Replace with actual logic
-}
 
-public boolean updateProfile(User updatedUser) {
-    return userDAO.updateUser(updatedUser);
+    public List<Rating> getUserRatings(int userId) {
+        return java.util.Collections.emptyList();
+    }
+
+    public List<Ride> getRideHistory(User user) {
+        return java.util.Collections.emptyList();
+    }
+
+    public boolean updateProfile(User updatedUser) {
+        return userDAO.updateUser(updatedUser);
+    }
+    private BookingService bookingService = new BookingService();
+
+public int getPassengerBookingCount(int userId) {
+    return bookingService.getPassengerBookingCount(userId);
 }
 
 }

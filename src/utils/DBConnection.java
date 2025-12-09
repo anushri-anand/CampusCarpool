@@ -1,4 +1,3 @@
-// DBConnection.java
 package utils;
 
 import java.sql.Connection;
@@ -8,29 +7,17 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import java.io.File;
 
-/**
- * Database connection utility class
- * Handles SQLite database connection and initialization
- */
 public class DBConnection {
 
     private static Connection conn = null;
     private static final String DB_URL = "jdbc:sqlite:campuscarpool.db";
 
-    /**
-     * Create or return existing DB connection
-     * @return Connection object
-     */
     public static Connection getConnection() {
         try {
             if (conn == null || conn.isClosed()) {
-                // Load SQLite JDBC driver (optional in modern Java, but good practice)
                 Class.forName("org.sqlite.JDBC");
-                
                 conn = DriverManager.getConnection(DB_URL);
                 System.out.println("Database connected successfully!");
-                
-                // Enable foreign keys (IMPORTANT for SQLite!)
                 enableForeignKeys();
             }
         } catch (SQLException e) {
@@ -43,10 +30,6 @@ public class DBConnection {
         return conn;
     }
 
-    /**
-     * Enable foreign key constraints in SQLite
-     * SQLite has foreign keys disabled by default!
-     */
     private static void enableForeignKeys() {
         try {
             Statement stmt = conn.createStatement();
@@ -57,11 +40,6 @@ public class DBConnection {
         }
     }
 
-    /**
-     * Execute SELECT queries
-     * @param sql the SQL SELECT query
-     * @return ResultSet containing query results
-     */
     public static ResultSet executeQuery(String sql) {
         try {
             Statement stmt = getConnection().createStatement();
@@ -73,11 +51,6 @@ public class DBConnection {
         }
     }
 
-    /**
-     * Execute INSERT/UPDATE/DELETE queries
-     * @param sql the SQL modification query
-     * @return number of rows affected, or 0 if failed
-     */
     public static int executeUpdate(String sql) {
         try {
             Statement stmt = getConnection().createStatement();
@@ -89,18 +62,10 @@ public class DBConnection {
         }
     }
 
-    /**
-     * Initialize database by running schema.sql
-     * Call this on first launch to create all tables
-     */
     public static void initializeDatabase() {
         try {
-            // Check if database file exists
             File dbFile = new File("campuscarpool.db");
             boolean isFirstRun = !dbFile.exists();
-            
-            // Get connection (creates file if doesn't exist)
-            Connection conn = getConnection();
             
             if (isFirstRun) {
                 System.out.println("First run detected. Initializing database...");
@@ -115,29 +80,15 @@ public class DBConnection {
         }
     }
 
-    /**
-     * Run the schema.sql script to create tables
-     * You can read from file or hardcode the SQL here
-     */
     private static void runSchemaScript() {
         try {
             Statement stmt = conn.createStatement();
-            
-            // Enable foreign keys first
             stmt.execute("PRAGMA foreign_keys = ON;");
-            
-            // NOTE:
-            // We use relaxed CHECK expressions (LIKE) for roll_number and email here
-            // to avoid SQLite rejecting inputs that Java-side validation accepts.
-            // Stronger validation is performed in AuthService (Java).
-            
-            // Create users table
+
             stmt.execute("CREATE TABLE IF NOT EXISTS users (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "name TEXT NOT NULL, " +
-                // Looser roll_number check so DB won't reject valid inputs; JS/Java enforces stricter format
                 "roll_number TEXT UNIQUE NOT NULL CHECK(roll_number LIKE '20%A7%S%U'), " +
-                // Looser email check: starts with 'f' and domain exact
                 "email TEXT UNIQUE NOT NULL CHECK(email LIKE 'f%@dubai.bits-pilani.ac.in'), " +
                 "password TEXT NOT NULL, " +
                 "role TEXT NOT NULL CHECK(role IN ('DRIVER', 'PASSENGER', 'BOTH')), " +
@@ -146,8 +97,7 @@ public class DBConnection {
                 "rating REAL DEFAULT 0.0, " +
                 "total_ratings INTEGER DEFAULT 0, " +
                 "created_at TEXT DEFAULT CURRENT_TIMESTAMP)");
-            
-            // Create drivers table
+
             stmt.execute("CREATE TABLE IF NOT EXISTS drivers (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "user_id INTEGER UNIQUE NOT NULL, " +
@@ -156,15 +106,13 @@ public class DBConnection {
                 "vehicle_number TEXT NOT NULL, " +
                 "seats_available INTEGER NOT NULL CHECK(seats_available > 0), " +
                 "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE)");
-            
-            // Create passengers table
+
             stmt.execute("CREATE TABLE IF NOT EXISTS passengers (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "user_id INTEGER UNIQUE NOT NULL, " +
                 "preferred_destination TEXT, " +
                 "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE)");
-            
-            // Create destinations table
+
             stmt.execute("CREATE TABLE IF NOT EXISTS destinations (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "name TEXT UNIQUE NOT NULL, " +
@@ -172,8 +120,7 @@ public class DBConnection {
                 "latitude REAL, " +
                 "longitude REAL, " +
                 "created_at TEXT DEFAULT CURRENT_TIMESTAMP)");
-            
-            // Create rides table
+
             stmt.execute("CREATE TABLE IF NOT EXISTS rides (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "driver_id INTEGER NOT NULL, " +
@@ -190,8 +137,7 @@ public class DBConnection {
                 "vehicle_info TEXT, " +
                 "created_at TEXT DEFAULT CURRENT_TIMESTAMP, " +
                 "FOREIGN KEY (driver_id) REFERENCES drivers(user_id) ON DELETE CASCADE)");
-            
-            // Create ride_requests table
+
             stmt.execute("CREATE TABLE IF NOT EXISTS ride_requests (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "passenger_id INTEGER NOT NULL, " +
@@ -205,23 +151,18 @@ public class DBConnection {
                 "notes TEXT, " +
                 "created_at TEXT DEFAULT CURRENT_TIMESTAMP, " +
                 "FOREIGN KEY (passenger_id) REFERENCES passengers(user_id) ON DELETE CASCADE)");
-            
-            // Create bookings table
-            // Create bookings table
-stmt.execute("CREATE TABLE IF NOT EXISTS bookings (" +
-    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-    "ride_id INTEGER NOT NULL, " +                     // must be non-null
-    "passenger_id INTEGER NOT NULL, " +
-    "status TEXT DEFAULT 'CONFIRMED' " +              // default now CONFIRMED
-        "CHECK(status IN ('REQUESTED', 'CONFIRMED', 'CANCELLED')), " +
-    "seats_booked INTEGER DEFAULT 1 CHECK(seats_booked > 0), " +
-    "timestamp TEXT DEFAULT CURRENT_TIMESTAMP, " +
-    "FOREIGN KEY (ride_id) REFERENCES rides(id) ON DELETE CASCADE, " +
-    "FOREIGN KEY (passenger_id) REFERENCES passengers(user_id) ON DELETE CASCADE, " +
-    "UNIQUE(ride_id, passenger_id))");
 
-            
-            // Create ratings table
+            stmt.execute("CREATE TABLE IF NOT EXISTS bookings (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "ride_id INTEGER NOT NULL, " +
+                "passenger_id INTEGER NOT NULL, " +
+                "status TEXT DEFAULT 'CONFIRMED' CHECK(status IN ('REQUESTED', 'CONFIRMED', 'CANCELLED')), " +
+                "seats_booked INTEGER DEFAULT 1 CHECK(seats_booked > 0), " +
+                "timestamp TEXT DEFAULT CURRENT_TIMESTAMP, " +
+                "FOREIGN KEY (ride_id) REFERENCES rides(id) ON DELETE CASCADE, " +
+                "FOREIGN KEY (passenger_id) REFERENCES passengers(user_id) ON DELETE CASCADE, " +
+                "UNIQUE(ride_id, passenger_id))");
+
             stmt.execute("CREATE TABLE IF NOT EXISTS ratings (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "from_user_id INTEGER NOT NULL, " +
@@ -234,8 +175,7 @@ stmt.execute("CREATE TABLE IF NOT EXISTS bookings (" +
                 "FOREIGN KEY (to_user_id) REFERENCES users(id) ON DELETE CASCADE, " +
                 "FOREIGN KEY (ride_id) REFERENCES rides(id) ON DELETE CASCADE, " +
                 "UNIQUE(from_user_id, to_user_id, ride_id))");
-            
-            // Create reports table
+
             stmt.execute("CREATE TABLE IF NOT EXISTS reports (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "reported_by INTEGER NOT NULL, " +
@@ -247,8 +187,7 @@ stmt.execute("CREATE TABLE IF NOT EXISTS bookings (" +
                 "FOREIGN KEY (reported_by) REFERENCES users(id) ON DELETE CASCADE, " +
                 "FOREIGN KEY (reported_user) REFERENCES users(id) ON DELETE CASCADE, " +
                 "FOREIGN KEY (ride_id) REFERENCES rides(id) ON DELETE SET NULL)");
-            
-            // Create indexes
+
             stmt.execute("CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)");
             stmt.execute("CREATE INDEX IF NOT EXISTS idx_users_roll_number ON users(roll_number)");
             stmt.execute("CREATE INDEX IF NOT EXISTS idx_rides_driver ON rides(driver_id)");
@@ -262,7 +201,6 @@ stmt.execute("CREATE TABLE IF NOT EXISTS bookings (" +
             stmt.execute("CREATE INDEX IF NOT EXISTS idx_ride_requests_status ON ride_requests(status)");
             
             stmt.close();
-            
             System.out.println("Database schema created successfully!");
             
         } catch (SQLException e) {
@@ -271,9 +209,6 @@ stmt.execute("CREATE TABLE IF NOT EXISTS bookings (" +
         }
     }
 
-    /**
-     * Close DB connection safely
-     */
     public static void closeConnection() {
         try {
             if (conn != null && !conn.isClosed()) {
@@ -286,9 +221,6 @@ stmt.execute("CREATE TABLE IF NOT EXISTS bookings (" +
         }
     }
 
-    /**
-     * Test database connection
-     */
     public static void main(String[] args) {
         System.out.println("Testing database connection...");
         initializeDatabase();

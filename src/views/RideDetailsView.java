@@ -53,20 +53,26 @@ public class RideDetailsView extends JFrame {
         add(btnCancel);
         add(btnBack);
 
-        // disable buttons based on state
+    
         btnBook.setEnabled(ride.hasAvailableSeats() && !ride.isPassengerBooked(currentUser.getId()));
         btnCancel.setEnabled(ride.isPassengerBooked(currentUser.getId()));
 
-        // listeners
-        btnBook.addActionListener(e -> {
-            boolean success = controller.bookSeat(ride, currentUser);
+       
+    btnBook.addActionListener(e -> {
+    String input = JOptionPane.showInputDialog(this, "Enter number of seats to book:");
+    if (input != null) {
+        try {
+            int seats = Integer.parseInt(input);
+            boolean success = controller.bookSeat(ride, currentUser, seats);
             if (success) {
-                JOptionPane.showMessageDialog(this, "Seat booked successfully!");
                 refreshUI();
-            } else {
-                JOptionPane.showMessageDialog(this, "Booking failed. Try again.", "Error", JOptionPane.ERROR_MESSAGE);
             }
-        });
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Please enter a valid number.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+});
+
 
         btnCancel.addActionListener(e -> {
             boolean success = controller.cancelBooking(ride, currentUser);

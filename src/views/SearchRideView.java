@@ -9,10 +9,6 @@ import java.awt.*;
 import java.time.LocalDate;
 import java.util.List;
 
-/**
-
-* Swing UI to search rides by route, destination, or date
-  */
   public class SearchRideView extends JFrame {
 
   private RideController rideController;
@@ -37,8 +33,6 @@ import java.util.List;
   private void initComponents() {
   setLayout(new BorderLayout());
 
-
-   // Top panel for search filters
    JPanel topPanel = new JPanel();
    topPanel.setLayout(new FlowLayout());
 
@@ -60,7 +54,6 @@ import java.util.List;
 
    add(topPanel, BorderLayout.NORTH);
 
-   // Table for displaying rides
    tableModel = new DefaultTableModel(
            new String[]{"ID", "Driver", "From", "To", "Date", "Time", "Seats", "Price (AED)", "Vehicle"},
            0
@@ -73,8 +66,7 @@ import java.util.List;
   }
 
   private void searchRides() {
-  tableModel.setRowCount(0); // Clear previous results
-
+  tableModel.setRowCount(0);
 
    String origin = txtOrigin.getText().trim();
    String destination = txtDestination.getText().trim();

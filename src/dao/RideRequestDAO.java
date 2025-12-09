@@ -2,7 +2,6 @@ package dao;
 
 import models.RideRequest;
 import utils.DBConnection;
-
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -10,14 +9,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * RideRequestDAO handles all database operations for RideRequest objects
- */
 public class RideRequestDAO {
 
-    /**
-     * Create a new ride request in the database
-     */
     public boolean createRideRequest(RideRequest request) {
         String sql = "INSERT INTO ride_requests (passenger_id, passenger_name, origin, destination, " +
                      "preferred_date, preferred_time, seats_requested, status, notes) " +
@@ -55,9 +48,6 @@ public class RideRequestDAO {
         return false;
     }
 
-    /**
-     * Update an existing ride request
-     */
     public boolean updateRideRequest(RideRequest request) {
         String sql = "UPDATE ride_requests SET status = ? WHERE id = ?";
         
@@ -77,9 +67,6 @@ public class RideRequestDAO {
         return false;
     }
 
-    /**
-     * Get a ride request by ID
-     */
     public RideRequest getRideRequestById(int id) {
         String sql = "SELECT * FROM ride_requests WHERE id = ?";
         
@@ -101,9 +88,6 @@ public class RideRequestDAO {
         return null;
     }
 
-    /**
-     * Get all pending ride requests
-     */
     public List<RideRequest> getAllPendingRequests() {
         String sql = "SELECT * FROM ride_requests WHERE status = 'PENDING' " +
                      "ORDER BY preferred_date, preferred_time";
@@ -125,9 +109,6 @@ public class RideRequestDAO {
         return requests;
     }
 
-    /**
-     * Get ride requests by passenger
-     */
     public List<RideRequest> getRequestsByPassenger(int passengerId) {
         String sql = "SELECT * FROM ride_requests WHERE passenger_id = ? " +
                      "ORDER BY preferred_date DESC, preferred_time DESC";
@@ -151,9 +132,6 @@ public class RideRequestDAO {
         return requests;
     }
 
-    /**
-     * Helper method to extract RideRequest from ResultSet
-     */
     private RideRequest extractRideRequestFromResultSet(ResultSet rs) throws SQLException {
         return new RideRequest(
             rs.getInt("id"),
@@ -170,9 +148,6 @@ public class RideRequestDAO {
         );
     }
 
-    /**
-     * Delete a ride request
-     */
     public boolean deleteRideRequest(int requestId) {
         String sql = "DELETE FROM ride_requests WHERE id = ?";
         

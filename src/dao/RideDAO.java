@@ -9,14 +9,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * RideDAO handles all database operations for Ride objects
- */
 public class RideDAO {
 
-    /**
-     * Create a new ride in the database
-     */
     public boolean createRide(Ride ride) {
         String sql = "INSERT INTO rides (driver_id, driver_name, origin, destination, " +
                      "departure_date, departure_time, seats_available, seats_total, " +
@@ -57,9 +51,6 @@ public class RideDAO {
         return false;
     }
 
-    /**
-     * Update an existing ride
-     */
     public boolean updateRide(Ride ride) {
         String sql = "UPDATE rides SET seats_available = ?, status = ? WHERE id = ?";
         
@@ -80,9 +71,6 @@ public class RideDAO {
         return false;
     }
 
-    /**
-     * Get a ride by ID
-     */
     public Ride getRideById(int id) {
         String sql = "SELECT * FROM rides WHERE id = ?";
         
@@ -104,9 +92,6 @@ public class RideDAO {
         return null;
     }
 
-    /**
-     * Get all active rides
-     */
     public List<Ride> getAllActiveRides() {
         String sql = "SELECT * FROM rides WHERE status = 'ACTIVE' ORDER BY departure_date, departure_time";
         List<Ride> rides = new ArrayList<>();
@@ -127,9 +112,6 @@ public class RideDAO {
         return rides;
     }
 
-    /**
-     * Get rides by destination
-     */
     public List<Ride> getRidesByDestination(String destination) {
         String sql = "SELECT * FROM rides WHERE destination = ? AND status = 'ACTIVE' " +
                      "ORDER BY departure_date, departure_time";
@@ -153,9 +135,6 @@ public class RideDAO {
         return rides;
     }
 
-    /**
-     * Get rides by route (origin and destination)
-     */
     public List<Ride> getRidesByRoute(String origin, String destination) {
         String sql = "SELECT * FROM rides WHERE origin = ? AND destination = ? AND status = 'ACTIVE' " +
                      "ORDER BY departure_date, departure_time";
@@ -180,9 +159,6 @@ public class RideDAO {
         return rides;
     }
 
-    /**
-     * Get rides by date
-     */
     public List<Ride> getRidesByDate(LocalDate date) {
         String sql = "SELECT * FROM rides WHERE departure_date = ? AND status = 'ACTIVE' " +
                      "ORDER BY departure_time";
@@ -206,9 +182,6 @@ public class RideDAO {
         return rides;
     }
 
-    /**
-     * Get rides posted by a specific driver
-     */
     public List<Ride> getRidesByDriver(int driverId) {
         String sql = "SELECT * FROM rides WHERE driver_id = ? ORDER BY departure_date DESC, departure_time DESC";
         List<Ride> rides = new ArrayList<>();
@@ -231,9 +204,6 @@ public class RideDAO {
         return rides;
     }
 
-    /**
-     * Get rides booked by a specific passenger
-     */
 public List<Ride> getRidesBookedByPassenger(int passengerId) {
     List<Ride> rides = new ArrayList<>();
     String sql = "SELECT r.* FROM rides r " +
@@ -265,10 +235,6 @@ public List<Ride> getRidesBookedByPassenger(int passengerId) {
     return rides;
 }
 
-
-    /**
-     * Helper method to extract Ride object from ResultSet
-     */
     private Ride extractRideFromResultSet(ResultSet rs) throws SQLException {
         return new Ride(
             rs.getInt("id"),
@@ -285,10 +251,7 @@ public List<Ride> getRidesBookedByPassenger(int passengerId) {
             rs.getString("vehicle_info")
         );
     }
-
-    /**
-     * Delete a ride (admin function)
-     */
+    
     public boolean deleteRide(int rideId) {
         String sql = "DELETE FROM rides WHERE id = ?";
         

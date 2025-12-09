@@ -2,21 +2,16 @@ package models;
 
 import java.time.LocalDateTime;
 
-/**
- * Rating class representing feedback between users.
- * Demonstrates: Encapsulation, Associations, Composition, Validation
- */
 public class Rating {
 
     private int ratingId;
     private User fromUser;
     private User toUser;
     private Ride ride;
-    private int score; // 1–5
+    private int score; 
     private String comment;
     private LocalDateTime timestamp;
 
-    // Constructors
 
     public Rating() {
         this.timestamp = LocalDateTime.now();
@@ -31,8 +26,6 @@ public class Rating {
         this.comment = comment;
         this.timestamp = LocalDateTime.now();
     }
-
-    // Getters and Setters
 
     public int getRatingId() {
         return ratingId;
@@ -70,7 +63,6 @@ public class Rating {
         return score;
     }
 
-    /** Validates rating score between 1 and 5 */
     public void setScore(int score) {
         if (score < 1 || score > 5)
             throw new IllegalArgumentException("Rating must be between 1 and 5");
@@ -89,15 +81,9 @@ public class Rating {
         return timestamp;
     }
 
-    // Business Logic
-
-    /** Allow updating a rating */
     public void updateScore(int newScore) {
         setScore(newScore);
     }
-
-    // Overrides
-
     @Override
     public String toString() {
         return "Rating{" +

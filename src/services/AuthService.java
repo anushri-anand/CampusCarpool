@@ -1,4 +1,3 @@
-// AuthService.java
 package services;
 
 import models.User;
@@ -8,9 +7,6 @@ import dao.UserDAO;
 import dao.DriverDAO;
 import dao.PassengerDAO;
 
-/**
- * AuthService handles user authentication and registration
- */
 public class AuthService {
     
     private UserDAO userDAO;
@@ -22,10 +18,6 @@ public class AuthService {
         this.driverDAO = new DriverDAO();
         this.passengerDAO = new PassengerDAO();
     }
-
-    // ========================================
-    // AUTHENTICATION
-    // ========================================
 
     public User login(String email, String password) {
         if (email == null || email.trim().isEmpty()) {
@@ -58,10 +50,6 @@ public class AuthService {
         }
     }
 
-    // ========================================
-    // REGISTRATION
-    // ========================================
-
     public Passenger registerPassenger(String name, String rollNumber, String email, 
                                        String password, String preferredDestination) {
         if (!validateRegistrationInputs(name, rollNumber, email, password)) return null;
@@ -87,7 +75,7 @@ public class AuthService {
 
     public Driver registerDriver(String name, String rollNumber, String email, String password,
                                  String licenseNumber, String vehicleModel, 
-                                 String vehicleNumber, int seatsAvailable) {
+                                 String vehicleNumber, int seatsAvailable, String role) {
         if (!validateRegistrationInputs(name, rollNumber, email, password)) return null;
 
         if (licenseNumber == null || licenseNumber.trim().isEmpty() ||
@@ -108,41 +96,28 @@ public class AuthService {
         }
 
         Driver driver = new Driver(name, rollNumber, email, password, licenseNumber, vehicleModel, vehicleNumber, seatsAvailable);
+        driver.setRole(role);
         boolean success = userDAO.createUser(driver);
         if (success) {
             driverDAO.createDriver(driver);
-            System.out.println("Driver registered successfully!");
+            System.out.println(role + "registered successfully!");
             return driver;
         }
         return null;
     }
 
-    // ========================================
-    // VALIDATION
-    // ========================================
-
-    /**
-     * Validate common registration inputs
-     *
-     * - Roll number years restricted to 2018-2025 (pattern 2018A7PS1234U etc).
-     * - Email must be f<YYYY><NNNN>@dubai.bits-pilani.ac.in where YYYY is 2018-2025 and NNNN any digits.
-     */
     private boolean validateRegistrationInputs(String name, String rollNumber, String email, String password) {
         if (name == null || name.trim().isEmpty()) {
             System.err.println("Name cannot be empty");
             return false;
         }
 
-        // Roll number: year restricted to 2018-2025
-        // Example: 2024A7PS0336U
         if (rollNumber == null || !rollNumber.matches("20(1[8-9]|2[0-5])A7[PT]S[0-9]{4}U")) {
             System.err.println("Invalid roll number format. Example: 2024A7PS0336U (year 2018-2025 allowed)");
             System.err.println("Your input was: [" + rollNumber + "]");
             return false;
         }
 
-        // Email: f + YEAR(2018-2025) + 4 digits + @dubai.bits-pilani.ac.in
-        // Example: f20240328@dubai.bits-pilani.ac.in
         if (email == null || !email.matches("f20(1[8-9]|2[0-5])[0-9]{4}@dubai\\.bits-pilani\\.ac\\.in")) {
             System.err.println("Invalid BITS Dubai email format. Example: f20240328@dubai.bits-pilani.ac.in (year 2018-2025 allowed)");
             System.err.println("Your input was: [" + email + "]");
@@ -156,10 +131,6 @@ public class AuthService {
 
         return true;
     }
-
-    // ========================================
-    // PASSWORD CHANGE / RESET
-    // ========================================
 
     public boolean changePassword(int userId, String oldPassword, String newPassword) {
         User user = userDAO.getUserById(userId);
@@ -192,4 +163,5 @@ public class AuthService {
         user.setPassword(newPassword);
         return userDAO.updateUser(user);
     }
+    
 }

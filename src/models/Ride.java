@@ -6,11 +6,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
-
-* Ride class representing a carpool ride posted by a driver.
-* Demonstrates: Encapsulation, Composition, Collections
-  */
   public class Ride {
   private int id;
   private int driverId;
@@ -26,7 +21,6 @@ import java.util.List;
   private String vehicleInfo;
   private List<Integer> bookedPassengerIds;
 
-  // Constructors
   public Ride() {
   this.bookedPassengerIds = new ArrayList<>();
   this.status = "ACTIVE";
@@ -67,7 +61,6 @@ import java.util.List;
   this.bookedPassengerIds = new ArrayList<>();
   }
 
-  // Getters and Setters
   public int getId() { return id; }
   public void setId(int id) { this.id = id; }
   public int getDriverId() { return driverId; }
@@ -95,7 +88,6 @@ import java.util.List;
   public List<Integer> getBookedPassengerIds() { return new ArrayList<>(bookedPassengerIds); }
   public void setBookedPassengerIds(List<Integer> bookedPassengerIds) { this.bookedPassengerIds = new ArrayList<>(bookedPassengerIds); }
 
-  // Booking methods
   public boolean bookSeat(int passengerId) {
   if (bookedPassengerIds.contains(passengerId) || seatsAvailable <= 0 || !status.equals("ACTIVE")) return false;
   bookedPassengerIds.add(passengerId);
@@ -127,7 +119,6 @@ import java.util.List;
   return routeMatches && dateMatches;
   }
 
-  // Utility
   public String getFormattedDepartureDateTime() {
   DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MMM dd, yyyy");
   DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm a");
@@ -137,12 +128,11 @@ import java.util.List;
   public String getRouteDescription() { return origin + " → " + destination; }
   public double getTotalRevenue() { return getBookedSeatsCount() * pricePerSeat; }
 
-  //  New helper methods for pickup/drop (fix errors in BookingView)
   public String getPickupLocation() { return origin; }
   public String getDropLocation() { return destination; }
 
   public String getDropoffLocation() {
-    return getDropLocation(); // or simply return destination;
+    return getDropLocation(); 
     }
 
   @Override

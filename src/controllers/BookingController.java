@@ -6,14 +6,7 @@ import services.BookingService;
 import services.RideService;
 import utils.NotificationCenter;
 import views.BookingView;
-
 import java.util.List;
-
-/**
-
-* Controller for booking-related logic
-* Acts as the bridge between BookingView (UI) and BookingService (Business Logic)
-  */
   public class BookingController {
 
   private BookingService bookingService;
@@ -21,24 +14,23 @@ import java.util.List;
   private BookingView bookingView;
   private User currentUser;
 
+
   public BookingController(BookingService bookingService, RideService rideService, User currentUser) {
   this.bookingService = bookingService;
   this.rideService = rideService;
   this.currentUser = currentUser;
+
   }
 
-  // Connect view to controller
   public void setView(BookingView view) {
   this.bookingView = view;
   }
 
-  // Load available rides
   public void loadAvailableRides() {
   List<Ride> rides = rideService.getAllActiveRides();
   if (bookingView != null) bookingView.showRides(rides);
   }
 
-  // Book selected ride with seat count
   public boolean bookSeat(Ride ride, User user, int seats) {
   if (user == null) {
   NotificationCenter.showError("User not logged in.");
@@ -54,7 +46,6 @@ import java.util.List;
   return success;
   }
 
-  // Cancel booking for ride and user
   public boolean cancelBooking(Ride ride, User user) {
   if (user == null) {
   NotificationCenter.showError("User not logged in.");
@@ -75,23 +66,19 @@ import java.util.List;
   return success;
   }
 
-  // Load bookings for current passenger
   public void loadMyBookings() {
   List<Ride> bookedRides = rideService.getRidesBookedByPassenger(currentUser.getId());
   if (bookingView != null) bookingView.showMyBookings(bookedRides);
   }
 
-  // Check if user already booked a ride
   public boolean hasBookedRide(int rideId) {
   return bookingService.hasPassengerBookedRide(currentUser.getId(), rideId);
   }
 
-  // Get booking ID for user + ride
   public int getBookingId(int rideId) {
   return bookingService.getBookingId(currentUser.getId(), rideId);
   }
 
-  // Convenience method for BookingView
   public void showMessage(String message) {
   if (bookingView != null) bookingView.showMessage(message);
   }
@@ -100,9 +87,5 @@ import java.util.List;
   if (bookingView != null) bookingView.showError(error);
   }
 
-  // Add to BookingController
-    public boolean bookSeat(Ride ride, User user) {
-        return bookSeat(ride, user, 1); // default to 1 seat
-    }
-
   }
+

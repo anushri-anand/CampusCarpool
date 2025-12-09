@@ -14,39 +14,18 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * RideService handles business logic for rides and ride requests.
- * Demonstrates: Service Layer Pattern, Business Logic Separation
- */
 public class RideService {
     
     private RideDAO rideDAO;
-    private RideRequestDAO rideRequestDAO;
-    private UserDAO userDAO;
 
-    // Constructor with dependency injection
     public RideService() {
         this.rideDAO = new RideDAO();
-        this.rideRequestDAO = new RideRequestDAO();
-        this.userDAO = new UserDAO();
     }
 
-    // Constructor for testing (allows mock DAOs)
     public RideService(RideDAO rideDAO, RideRequestDAO rideRequestDAO, UserDAO userDAO) {
         this.rideDAO = rideDAO;
-        this.rideRequestDAO = rideRequestDAO;
-        this.userDAO = userDAO;
     }
 
-    // ========================================
-    // RIDE POSTING (Driver Actions)
-    // ========================================
-
-    /**
-     * Create ride directly (used by GUI)
-     * @param ride ride object
-     * @return true if created
-     */
     public boolean createRide(Ride ride) {
         return rideDAO.createRide(ride);
     }
@@ -69,7 +48,6 @@ public class RideService {
             return false;
         }
 
-        // Cancel the ride
         ride.cancelRide();
         boolean success = rideDAO.updateRide(ride);
 
@@ -80,10 +58,6 @@ public class RideService {
         return success;
     }
 
-    // ========================================
-    // RIDE SEARCH & DISPLAY
-    // ========================================
-
     public List<Ride> getAllActiveRides() {
         return rideDAO.getAllActiveRides();
     }
@@ -92,83 +66,66 @@ public class RideService {
         return rideDAO.getRidesByDriver(driverId);
     }
 
-public List<Ride> getRidesBookedByPassenger(int passengerId) {
-    List<Ride> rides = new ArrayList<>();
-    BookingDAO bookingDAO = new BookingDAO();
-    RideDAO rideDAO = new RideDAO();
+    public List<Ride> getRidesBookedByPassenger(int passengerId) {
+        List<Ride> rides = new ArrayList<>();
+        BookingDAO bookingDAO = new BookingDAO();
+        RideDAO rideDAO = new RideDAO();
 
-    List<Integer> rideIds = bookingDAO.getRideIdsByPassenger(passengerId);
-    for (Integer rideId : rideIds) {
-        Ride ride = rideDAO.getRideById(rideId);
-        if (ride != null && "ACTIVE".equals(ride.getStatus())) {
-            rides.add(ride);
+        List<Integer> rideIds = bookingDAO.getRideIdsByPassenger(passengerId);
+        for (Integer rideId : rideIds) {
+            Ride ride = rideDAO.getRideById(rideId);
+            if (ride != null && "ACTIVE".equals(ride.getStatus())) {
+                rides.add(ride);
+            }
         }
+
+        return rides;
     }
 
-    return rides;
-}
-
-
-    // ... rest of your RideRequest and helper methods unchanged
-
-    /**
-    * Notifies passengers when a ride is cancelled.
-    * For now, this is just a simple placeholder method used by GUI & logging.
-    * Later you can expand it to notify users via email/SMS/notification center.
-    */
     private void notifyPassengersOfCancellation(Ride ride) {
         System.out.println("Passengers have been notified that the ride from "
                             + ride.getPickupLocation() + " to "
                                 + ride.getDropoffLocation() + " has been cancelled.");
     }
 
-    // In RideService.java, add these methods:
-
-    // 1. Search methods
     public List<Ride> searchRidesByDestination(String destination) {
-       return rideDAO.getRidesByDestination(destination);
-        }
+        return rideDAO.getRidesByDestination(destination);
+    }
 
     public List<Ride> searchRidesByRoute(String origin, String destination) {
-      return rideDAO.getRidesByRoute(origin, destination);
+        return rideDAO.getRidesByRoute(origin, destination);
     }
 
     public List<Ride> searchRidesByDate(LocalDate date) {
-       return rideDAO.getRidesByDate(date);
+        return rideDAO.getRidesByDate(date);
     }
 
-    // 2. Post ride (driver)
     public Ride postRide(Driver driver, String origin, String destination,
                      LocalDate departureDate, LocalTime departureTime,
                      int seatsAvailable, double pricePerSeat) {
 
-    // Build vehicle info manually
-    String vehicleInfo = driver.getVehicleModel() + " (" + driver.getVehicleNumber() + ")";
+        String vehicleInfo = driver.getVehicleModel() + " (" + driver.getVehicleNumber() + ")";
 
-    // Create a new Ride object
-    Ride ride = new Ride(
-            0,  // Auto-generated ID
-            driver.getId(),
-            driver.getName(),
-            origin,
-            destination,
-            departureDate,
-            departureTime,
-            seatsAvailable,     // seats_available
-            seatsAvailable,     // seats_total
-            pricePerSeat,
-            "ACTIVE",
-            vehicleInfo
-    );
+        Ride ride = new Ride(
+                0,
+                driver.getId(),
+                driver.getName(),
+                origin,
+                destination,
+                departureDate,
+                departureTime,
+                seatsAvailable,
+                seatsAvailable,
+                pricePerSeat,
+                "ACTIVE",
+                vehicleInfo
+        );
 
-    // Save to DB
-    boolean success = rideDAO.createRide(ride);
+        boolean success = rideDAO.createRide(ride);
 
-    return success ? ride : null;
-}
+        return success ? ride : null;
+    }
 
-
-    // 3. Complete ride
     public boolean completeRide(int rideId, int driverId) {
         Ride ride = rideDAO.getRideById(rideId);
         if (ride != null && ride.getDriverId() == driverId) {
@@ -178,33 +135,30 @@ public List<Ride> getRidesBookedByPassenger(int passengerId) {
         return false;
     }
 
-    // 4. Ride requests (passenger)
     public RideRequest postRideRequest(Passenger passenger, String origin, String destination,
                                     LocalDate preferredDate, LocalTime preferredTime,
                                     int seatsRequested, String notes) {
-        return null; // implement using RideRequestDAO
+        return null;
     }
 
     public boolean cancelRideRequest(int requestId, int passengerId) {
-        return false; // implement using RideRequestDAO
+        return false;
     }
 
     public List<RideRequest> getAllPendingRequests() {
-        return new ArrayList<>(); // implement using RideRequestDAO
+        return new ArrayList<>();
     }
 
     public List<RideRequest> getRequestsByPassenger(int passengerId) {
-        return new ArrayList<>(); // implement using RideRequestDAO
+        return new ArrayList<>();
     }
 
-    // 5. Matching
     public List<Ride> findMatchingRidesForRequest(RideRequest request) {
-        return new ArrayList<>(); // implement matching logic
+        return new ArrayList<>();
     }
 
     public List<RideRequest> findMatchingRequestsForRide(Ride ride) {
-        return new ArrayList<>(); // implement matching logic
+        return new ArrayList<>();
     }
-
 
 }

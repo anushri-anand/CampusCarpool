@@ -1,21 +1,12 @@
 package dao;
 
 import models.User;
-import models.Driver;
-import models.Passenger;
 import utils.DBConnection;
-
 import java.sql.*;
 import java.time.LocalDateTime;
 
-/**
- * UserDAO handles database operations for User objects
- */
 public class UserDAO {
 
-    /**
-     * Create a new user in the database
-     */
     public boolean createUser(User user) {
         String sql = "INSERT INTO users (name, roll_number, email, password, role, warnings, " +
                      "blacklist_until, rating, total_ratings) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -52,9 +43,6 @@ public class UserDAO {
         return false;
     }
 
-    /**
-     * Update an existing user
-     */
     public boolean updateUser(User user) {
         String sql = "UPDATE users SET name = ?, password = ?, warnings = ?, " +
                      "blacklist_until = ?, rating = ?, total_ratings = ? WHERE id = ?";
@@ -80,9 +68,6 @@ public class UserDAO {
         return false;
     }
 
-    /**
-     * Get user by ID
-     */
     public User getUserById(int id) {
         String sql = "SELECT * FROM users WHERE id = ?";
         
@@ -104,9 +89,6 @@ public class UserDAO {
         return null;
     }
 
-    /**
-     * Get user by email
-     */
     public User getUserByEmail(String email) {
         String sql = "SELECT * FROM users WHERE email = ?";
         
@@ -128,9 +110,6 @@ public class UserDAO {
         return null;
     }
 
-    /**
-     * Get user by roll number
-     */
     public User getUserByRollNumber(String rollNumber) {
         String sql = "SELECT * FROM users WHERE roll_number = ?";
         
@@ -152,9 +131,6 @@ public class UserDAO {
         return null;
     }
 
-    /**
-     * Authenticate user with email and password
-     */
     public User authenticate(String email, String password) {
         String sql = "SELECT * FROM users WHERE email = ? AND password = ?";
         
@@ -177,9 +153,6 @@ public class UserDAO {
         return null;
     }
 
-    /**
-     * Delete a user
-     */
     public boolean deleteUser(int userId) {
         String sql = "DELETE FROM users WHERE id = ?";
         
@@ -197,9 +170,6 @@ public class UserDAO {
         return false;
     }
 
-    /**
-     * Extract User object from ResultSet
-     */
     private User extractUserFromResultSet(ResultSet rs) throws SQLException {
         LocalDateTime blacklistUntil = null;
         String blacklistStr = rs.getString("blacklist_until");

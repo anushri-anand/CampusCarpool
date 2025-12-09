@@ -6,14 +6,9 @@ import utils.DBConnection;
 import java.sql.*;
 import java.time.LocalDateTime;
 
-/**
- * PassengerDAO handles database operations for Passenger-specific data
- */
+
 public class PassengerDAO {
 
-    /**
-     * Create passenger record
-     */
     public boolean createPassenger(Passenger passenger) {
         String sql = "INSERT INTO passengers (user_id, preferred_destination) VALUES (?, ?)";
         
@@ -34,9 +29,6 @@ public class PassengerDAO {
         return false;
     }
 
-    /**
-     * Update passenger information
-     */
     public boolean updatePassenger(Passenger passenger) {
         String sql = "UPDATE passengers SET preferred_destination = ? WHERE user_id = ?";
         
@@ -56,9 +48,6 @@ public class PassengerDAO {
         return false;
     }
 
-    /**
-     * Get passenger by user ID
-     */
     public Passenger getPassengerByUserId(int userId) {
         String sql = "SELECT u.*, p.preferred_destination " +
                      "FROM users u JOIN passengers p ON u.id = p.user_id WHERE u.id = ?";
@@ -81,9 +70,6 @@ public class PassengerDAO {
         return null;
     }
 
-    /**
-     * Extract Passenger object from ResultSet
-     */
     private Passenger extractPassengerFromResultSet(ResultSet rs) throws SQLException {
         LocalDateTime blacklistUntil = null;
         String blacklistStr = rs.getString("blacklist_until");
@@ -105,9 +91,6 @@ public class PassengerDAO {
         );
     }
 
-    /**
-     * Delete passenger record
-     */
     public boolean deletePassenger(int userId) {
         String sql = "DELETE FROM passengers WHERE user_id = ?";
         

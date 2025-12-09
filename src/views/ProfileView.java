@@ -9,8 +9,6 @@ import models.User;
 import models.Rating;
 import models.Ride;
 
-import views.ChangePasswordView;
-import views.EditProfileView;
 
 
 public class ProfileView extends JFrame {
@@ -21,12 +19,11 @@ public class ProfileView extends JFrame {
 
     public ProfileView(ProfileController controller) {
         this.controller = controller;
-        controller.setView(this);     // CONNECT VIEW TO CONTROLLER
+        controller.setView(this);     
         initUI();
-        controller.loadProfile();     // LOAD USER DATA FROM SERVICE
+        controller.loadProfile();     
     }
 
-    // Initialize Swing GUI Components
     private void initUI() {
         setTitle("My Profile");
         setSize(450, 400);
@@ -56,7 +53,6 @@ public class ProfileView extends JFrame {
         add(btnEditProfile);
         add(btnBack);
 
-        // Listeners
         btnChangePass.addActionListener(e -> new ChangePasswordView(controller));
         btnEditProfile.addActionListener(e -> new EditProfileView(controller));
         btnBack.addActionListener(e -> dispose());
@@ -64,7 +60,6 @@ public class ProfileView extends JFrame {
         setVisible(true);
     }
 
-    // Called by Controller AFTER DATA IS LOADED
     public void showProfileDetails(User u, List<Rating> ratings, List<Ride> rides) {
         lblName.setText("Name: " + u.getName());
         lblRoll.setText("Roll No: " + u.getRollNumber());

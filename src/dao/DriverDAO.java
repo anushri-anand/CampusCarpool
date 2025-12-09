@@ -6,14 +6,9 @@ import utils.DBConnection;
 import java.sql.*;
 import java.time.LocalDateTime;
 
-/**
- * DriverDAO handles database operations for Driver-specific data
- */
+
 public class DriverDAO {
 
-    /**
-     * Create driver record
-     */
     public boolean createDriver(Driver driver) {
         String sql = "INSERT INTO drivers (user_id, license_number, vehicle_model, " +
                      "vehicle_number, seats_available) VALUES (?, ?, ?, ?, ?)";
@@ -38,9 +33,6 @@ public class DriverDAO {
         return false;
     }
 
-    /**
-     * Update driver information
-     */
     public boolean updateDriver(Driver driver) {
         String sql = "UPDATE drivers SET license_number = ?, vehicle_model = ?, " +
                      "vehicle_number = ?, seats_available = ? WHERE user_id = ?";
@@ -64,9 +56,6 @@ public class DriverDAO {
         return false;
     }
 
-    /**
-     * Get driver by user ID
-     */
     public Driver getDriverByUserId(int userId) {
         String sql = "SELECT u.*, d.license_number, d.vehicle_model, d.vehicle_number, d.seats_available " +
                      "FROM users u JOIN drivers d ON u.id = d.user_id WHERE u.id = ?";
@@ -89,9 +78,6 @@ public class DriverDAO {
         return null;
     }
 
-    /**
-     * Extract Driver object from ResultSet
-     */
     private Driver extractDriverFromResultSet(ResultSet rs) throws SQLException {
         LocalDateTime blacklistUntil = null;
         String blacklistStr = rs.getString("blacklist_until");
@@ -116,9 +102,6 @@ public class DriverDAO {
         );
     }
 
-    /**
-     * Delete driver record
-     */
     public boolean deleteDriver(int userId) {
         String sql = "DELETE FROM drivers WHERE user_id = ?";
         

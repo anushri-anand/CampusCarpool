@@ -6,12 +6,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * BookingDAO handles database operations for bookings
- */
 public class BookingDAO {
 
-    // 1. Create a new booking
     public boolean createBooking(int passengerId, int rideId, int seatsBooked) {
         String sql = "INSERT INTO bookings (ride_id, passenger_id, seats_booked, status) VALUES (?, ?, ?, 'CONFIRMED')";
         try (Connection conn = DBConnection.getConnection();
@@ -27,7 +23,6 @@ public class BookingDAO {
         return false;
     }
 
-    // 2. Check if passenger has booked a ride
     public boolean hasPassengerBooked(int passengerId, int rideId) {
         String sql = "SELECT COUNT(*) FROM bookings WHERE passenger_id = ? AND ride_id = ? " +
                      "AND status IN ('REQUESTED', 'CONFIRMED')";
@@ -46,12 +41,10 @@ public class BookingDAO {
         return false;
     }
 
-    // 3. Cancel a booking
     public boolean cancelBooking(int bookingId) {
         return updateBookingStatus(bookingId, "CANCELLED");
     }
 
-    // 4. Update booking status (e.g., confirm, cancel)
     public boolean updateBookingStatus(int bookingId, String status) {
         String sql = "UPDATE bookings SET status = ? WHERE id = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -66,7 +59,6 @@ public class BookingDAO {
         return false;
     }
 
-    // 5. Get ride ID by booking ID
     public Integer getRideIdByBookingId(int bookingId) {
         String sql = "SELECT ride_id FROM bookings WHERE id = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -98,8 +90,6 @@ public class BookingDAO {
     return rideIds;
 }
 
-
-    // 6. Get passenger ID by booking ID
     public Integer getPassengerIdByBookingId(int bookingId) {
         String sql = "SELECT passenger_id FROM bookings WHERE id = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -116,7 +106,6 @@ public class BookingDAO {
         return null;
     }
 
-    // 7. Get seats booked by booking ID
     public Integer getSeatsByBookingId(int bookingId) {
         String sql = "SELECT seats_booked FROM bookings WHERE id = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -133,7 +122,6 @@ public class BookingDAO {
         return null;
     }
 
-    // 8. Get status by booking ID
     public String getStatusByBookingId(int bookingId) {
         String sql = "SELECT status FROM bookings WHERE id = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -150,7 +138,6 @@ public class BookingDAO {
         return null;
     }
 
-    // 9. Get booking count for a passenger
     public int getBookingCountByPassenger(int passengerId) {
         String sql = "SELECT COUNT(*) FROM bookings WHERE passenger_id = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -167,7 +154,6 @@ public class BookingDAO {
         return 0;
     }
 
-    // 10. Get booking count for a ride
     public int getBookingCountByRide(int rideId) {
         String sql = "SELECT COUNT(*) FROM bookings WHERE ride_id = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -184,7 +170,6 @@ public class BookingDAO {
         return 0;
     }
 
-    // 11. Get pending booking count for driver
     public int getPendingBookingCountByDriver(int driverId) {
         String sql = "SELECT COUNT(*) FROM bookings b " +
                      "JOIN rides r ON b.ride_id = r.id " +
@@ -203,7 +188,6 @@ public class BookingDAO {
         return 0;
     }
 
-    // 12. Get booking ID for passenger and ride (used in controller!)
     public Integer getBookingId(int passengerId, int rideId) {
         String sql = "SELECT id FROM bookings WHERE passenger_id = ? AND ride_id = ? " +
                 "AND status IN ('REQUESTED', 'CONFIRMED')";
@@ -222,7 +206,6 @@ public class BookingDAO {
         return null;
     }
 
-    // 13. Delete booking
     public boolean deleteBooking(int bookingId) {
         String sql = "DELETE FROM bookings WHERE id = ?";
         try (Connection conn = DBConnection.getConnection();

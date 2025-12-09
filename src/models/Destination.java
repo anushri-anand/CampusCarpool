@@ -1,9 +1,5 @@
 package models;
 
-/**
- * Destination class representing ride endpoints.
- * Demonstrates: Encapsulation, Clean Modeling, Future Scalability
- */
 public class Destination {
 
     private int destinationId;
@@ -11,8 +7,6 @@ public class Destination {
     private String description;
     private double latitude;
     private double longitude;
-
-    // Constructors
 
     public Destination() {}
 
@@ -30,8 +24,6 @@ public class Destination {
         this.latitude = latitude;
         this.longitude = longitude;
     }
-
-    // Getters and Setters
 
     public int getDestinationId() {
         return destinationId;
@@ -72,8 +64,6 @@ public class Destination {
     public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
-
-    // Overrides
 
     @Override
     public String toString() {

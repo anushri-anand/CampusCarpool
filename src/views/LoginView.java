@@ -1,39 +1,27 @@
 package views;
 
 import controllers.RideController;
-import controllers.AuthController;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 
-/**
- * LoginView - Login and Registration screen for CampusCarpool
- * Demonstrates: Swing GUI, Form Validation, Event Handling
- */
 public class LoginView extends JFrame {
 
     private RideController controller;
 
-    // Login components
     private JTextField loginEmailField;
     private JPasswordField loginPasswordField;
     private JButton loginButton;
     private JButton showRegisterButton;
 
-    // Main panels
     private JPanel mainPanel;
     private CardLayout cardLayout;
 
-    // Constructor
     public LoginView() {
         this.controller = new RideController();
         initializeUI();
     }
 
-    /**
-     * Initialize the user interface
-     */
     private void initializeUI() {
         setTitle("CampusCarpool - Login");
         setSize(500, 600);
@@ -41,33 +29,25 @@ public class LoginView extends JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
 
-        // Card layout for switching between login and register
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
 
-        // Create login and register panels
         JPanel loginPanel = createLoginPanel();
-
-        // REGISTER PANEL STILL CREATED BUT DISABLED (Option A)
-        JPanel registerPanel = createRegisterPanel();  // <- still created
+        JPanel registerPanel = createRegisterPanel();
         registerPanel.setEnabled(false);
-        registerPanel.setVisible(false);              // <- but never shown
+        registerPanel.setVisible(false);
 
         mainPanel.add(loginPanel, "LOGIN");
-        mainPanel.add(registerPanel, "REGISTER");      // <- but we never switch to it
+        mainPanel.add(registerPanel, "REGISTER");
 
         add(mainPanel);
     }
 
-    /**
-     * Create login panel
-     */
     private JPanel createLoginPanel() {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(30, 40, 30, 40));
         panel.setBackground(Color.WHITE);
 
-        // Header
         JPanel headerPanel = new JPanel(new GridLayout(3, 1, 5, 5));
         headerPanel.setBackground(Color.WHITE);
 
@@ -87,7 +67,6 @@ public class LoginView extends JFrame {
         headerPanel.add(subtitleLabel);
         headerPanel.add(welcomeLabel);
 
-        // Form panel
         JPanel formPanel = new JPanel(new GridBagLayout());
         formPanel.setBackground(Color.WHITE);
         formPanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
@@ -95,7 +74,6 @@ public class LoginView extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(10, 0, 10, 0);
 
-        // Email
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
@@ -113,7 +91,6 @@ public class LoginView extends JFrame {
         ));
         formPanel.add(loginEmailField, gbc);
 
-        // Password
         gbc.gridy = 2;
         JLabel passwordLabel = new JLabel("Password");
         passwordLabel.setFont(new Font("Arial", Font.BOLD, 13));
@@ -129,7 +106,6 @@ public class LoginView extends JFrame {
         ));
         formPanel.add(loginPasswordField, gbc);
 
-        // Login button
         gbc.gridy = 4;
         gbc.insets = new Insets(20, 0, 10, 0);
         loginButton = new JButton("Login");
@@ -143,7 +119,6 @@ public class LoginView extends JFrame {
         loginButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         formPanel.add(loginButton, gbc);
 
-        // Register link
         gbc.gridy = 5;
         gbc.insets = new Insets(10, 0, 0, 0);
         JPanel registerLinkPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
@@ -165,28 +140,22 @@ public class LoginView extends JFrame {
 
         formPanel.add(registerLinkPanel, gbc);
 
-        // Event handlers
         loginButton.addActionListener(e -> handleLogin());
         loginPasswordField.addActionListener(e -> handleLogin());
 
-        // OVERRIDE: open the REAL RegisterView
         showRegisterButton.addActionListener(e -> {
             dispose();
             new RegisterView().setVisible(true);
         });
 
-        // Layout
         panel.add(headerPanel, BorderLayout.NORTH);
         panel.add(formPanel, BorderLayout.CENTER);
 
         return panel;
     }
 
-    /**
-     * Dummy register panel (disabled)
-     */
     private JPanel createRegisterPanel() {
-        return new JPanel(); // kept but disabled
+        return new JPanel();
     }
 
     private void handleLogin() {

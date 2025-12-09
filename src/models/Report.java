@@ -3,33 +3,20 @@ package models;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-/**
- * Report model representing a user report for safety/misconduct
- * Demonstrates: Encapsulation, Business Logic
- */
 public class Report {
-    // Report attributes
+   
     private int id;
     private int reportedBy;
     private int reportedUserId;
-    private Integer rideId; // Optional - can be null
+    private Integer rideId; 
     private String reason;
-    private String status; // "PENDING", "REVIEWED", "RESOLVED"
+    private String status; 
     private LocalDateTime timestamp;
 
-    // Constructors
-
-    /**
-     * Default constructor
-     */
     public Report() {
         this.timestamp = LocalDateTime.now();
         this.status = "PENDING";
     }
-
-    /**
-     * Constructor for creating a new report
-     */
     public Report(int reportedBy, int reportedUserId, Integer rideId, String reason) {
         this.reportedBy = reportedBy;
         this.reportedUserId = reportedUserId;
@@ -39,9 +26,6 @@ public class Report {
         this.timestamp = LocalDateTime.now();
     }
 
-    /**
-     * Full constructor (for database retrieval)
-     */
     public Report(int id, int reportedBy, int reportedUserId, Integer rideId, 
                   String reason, String status, LocalDateTime timestamp) {
         this.id = id;
@@ -53,7 +37,6 @@ public class Report {
         this.timestamp = timestamp;
     }
 
-    // Getters and Setters
 
     public int getId() {
         return id;
@@ -111,67 +94,41 @@ public class Report {
         this.timestamp = timestamp;
     }
 
-    // Business Logic Methods
 
-    /**
-     * Check if report is pending
-     */
     public boolean isPending() {
         return status.equals("PENDING");
     }
 
-    /**
-     * Check if report has been reviewed
-     */
     public boolean isReviewed() {
         return status.equals("REVIEWED");
     }
 
-    /**
-     * Check if report is resolved
-     */
     public boolean isResolved() {
         return status.equals("RESOLVED");
     }
 
-    /**
-     * Mark report as reviewed
-     */
     public void markAsReviewed() {
         this.status = "REVIEWED";
     }
 
-    /**
-     * Mark report as resolved
-     */
     public void markAsResolved() {
         this.status = "RESOLVED";
     }
 
-    /**
-     * Check if report is associated with a ride
-     */
     public boolean hasAssociatedRide() {
         return rideId != null;
     }
 
-    /**
-     * Get formatted timestamp
-     */
     public String getFormattedTimestamp() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm");
         return timestamp.format(formatter);
     }
 
-    /**
-     * Get report summary
-     */
     public String getSummary() {
         String rideInfo = hasAssociatedRide() ? " (Ride ID: " + rideId + ")" : "";
         return "Report against User " + reportedUserId + rideInfo + " - " + status;
     }
 
-    // Override toString for debugging
     @Override
     public String toString() {
         return "Report{" +
@@ -185,7 +142,6 @@ public class Report {
                 '}';
     }
 
-    // Override equals for comparison
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -194,7 +150,6 @@ public class Report {
         return id == report.id;
     }
 
-    // Override hashCode for collections
     @Override
     public int hashCode() {
         return Integer.hashCode(id);

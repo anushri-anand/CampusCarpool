@@ -19,7 +19,7 @@ public class BookingView extends JFrame {
         controller.setView(this);
 
         initUI();
-        controller.loadAvailableRides();   // Load rides on open
+        controller.loadAvailableRides();
     }
 
     private void initUI() {
@@ -43,17 +43,12 @@ public class BookingView extends JFrame {
 
         add(buttonPanel, BorderLayout.SOUTH);
 
-        // Listeners
         btnSearch.addActionListener(e -> controller.loadAvailableRides());
         btnMyBookings.addActionListener(e -> controller.loadMyBookings());
         btnBack.addActionListener(e -> dispose());
 
         setVisible(true);
     }
-
-    // ===============================
-    // CONTROLLER -> VIEW METHODS
-    // ===============================
 
     public void showRides(List<Ride> rides) {
         textArea.setText("");
@@ -98,4 +93,5 @@ public class BookingView extends JFrame {
     public void showError(String err) {
         JOptionPane.showMessageDialog(this, err, "Error", JOptionPane.ERROR_MESSAGE);
     }
+    
 }
